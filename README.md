@@ -1,15 +1,13 @@
 # Senior Data Enginer Tech Challenge
 ---
-This test is split into 5 sections:
+This test is split into 3 sections:
 1. Data Pipelines
 2. Databases 
 3. System Design
-4. Charts & APIs
-5. Machine Learning
 
 ---
 ## Submission Guidelines
-Please create a Github repository containing your submission and send us an email containing a link to the repository.
+Please create a Github repository containing your submission and send us an email containing a link to the repository. Ensure that the repository is marked as `Private`, and grant access to the users provided to you separately.
 
 Dos:
 - Frequent commits
