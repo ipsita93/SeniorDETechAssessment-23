@@ -116,25 +116,3 @@ You will need to ensure that the architecture takes into account the best practi
 - Least Privilege
 
 Do indicate any assumptions you have made regarding the architecture. You are required to provide a detailed explanation on the diagram.
-
----
-## Section 4: Charts & APIs
-Your team decided to design a dashboard to display the statistic of COVID19 cases. You are tasked to display one of the components of the dashboard which is to display a visualisation representation of number of COVID19 cases in Singapore over time.
-
-Your team decided to use the public data from https://documenter.getpostman.com/view/10808728/SzS8rjbc#b07f97ba-24f4-4ebe-ad71-97fa35f3b683.
-
-Display a graph to show the number cases in Singapore over time using the APIs from https://covid19api.com/.
-
-Note: please submit screenshots of the dashboard
-
----
-
-
-## Section 5: Machine Learning
-Using the dataset from https://archive.ics.uci.edu/ml/datasets/Car+Evaluation, create a machine learning model to predict the buying price given the following parameters:
-
-Maintenance = High <br>
-Number of doors = 4 <br>
-Lug Boot Size = Big <br>
-Safety = High <br>
-Class Value = Good <br>
