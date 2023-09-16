@@ -26,22 +26,7 @@ def convert_to_datetime (str):
     elif len(str) == 8:
         str = re.sub(r'([1-9])([jfmasondJFMASOND][aepucoAEPUCO][nbrylgptvcNBRYLGPTVC])([0-9]{4})', r'\1 \2 \3', str)
 
-    # # Define the format of the date string
-    # date_format = "%Y-%m-%d"
-
-    # try:
-    #     # Parse the date string into a datetime object
-    #     dates = pydt.strptime(str, date_format)
-    #     # Display the parsed date object
-    #     print(dates)
-    # except ValueError:
-    #     print("Invalid date format. Please use YYYY-MM-DD.")
-
-    # for d in dates:
-    #     if isinstance(d, datetime.datetime):
-    #         return d
-
-    # # Determine and convert yyyymmdd or ddmmyyyy
+    # Determine and convert yyyymmdd or ddmmyyyy
     # if len(str) != 8 or not str.isdigit():
     #     return None
     str = str.replace('-', '')  

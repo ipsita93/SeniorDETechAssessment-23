@@ -7,7 +7,7 @@ import os
 import pandas as pd
 import logging
 import re
-from datetime import datetime
+from datetime import datetime as pydt
 import utility
 import numpy as np
 
@@ -87,6 +87,20 @@ def format_birthday(date_of_birth):
 
     return dob_converted
 
+# Takes in date_of_birth string in YYYYMMDD format
+# Returns a boolean which is true if the applicant is above 18 years as of 1 Jan 2022
+def is_above_18(date_of_birth): 
+    current_date = pydt(2022, 1, 1)
+    date_of_birth = pydt.strptime(date_of_birth, '%Y%m%d')
+    time_difference = current_date - date_of_birth
+    age = round(time_difference.days/365)
+    logger.info("Age of applicant is: {}".format(age))
+
+    if age > 18: 
+        return True
+    else: 
+        return False
+
 # Takes in a dataframe
 # Returns a processed dataframe
 def processData(df): 
@@ -102,9 +116,9 @@ def processData(df):
     logger.info("Format birthday")
     df['date_of_birth_YYYYMMDD'] = df['date_of_birth'].apply( lambda x: format_birthday(x) )
     
-    # # Create a new field named above_18 based on the applicant's birthday
-    # logger.info("Add above_18 field")
-    # df['above_18'] = df['date_of_birth_YYYYMMDD'].apply( lambda x: is_above_18(x) )
+    # Create a new field named above_18 based on the applicant's birthday
+    logger.info("Add above_18 field")
+    df['above_18'] = df['date_of_birth_YYYYMMDD'].apply( lambda x: is_above_18(x) )
 
     # Add field to categorize application as successful or unsuccessful 
     # Application mobile number is 8 digits
@@ -136,8 +150,7 @@ def main (input_dir, success_dir, failure_dir):
         logger.info("Processing CSV: {}".format(filename))
         processCSV(filename)
 
-if __name__ == "__main__":
-    # Input and output directories
+if __name__ == "__main__":  # Input and output directories
     input_dir = "input"
     output_dir = "output"
     success_dir = os.path.join(output_dir, "applications_successful")
