@@ -120,12 +120,21 @@ def is_valid_email(email):
 # Returns a boolean which is true if the applicant's name is not empty
 def has_no_name(name): 
     if name == None:
-        logger.debug("Applicant has no name: [{}]".format(name)) 
+        logger.debug("No name: [{}]".format(name)) 
         return True
     else: 
-        logger.debug("Applicant has name: [{}]".format(name)) 
+        logger.debug("Has name: [{}]".format(name)) 
         return False
 
+# Takes in mobile_no string  
+# Returns a boolean which is true if the applicant's mobile no has 8 digits 
+def is_valid_mobile_no(mobile_no): 
+    if len(mobile_no) == 8:
+        logger.debug("Mobile has 8 digits: [{}]".format(mobile_no)) 
+        return True
+    else: 
+        logger.debug("Mobile does not have 8 digits: [{}]".format(mobile_no)) 
+        return False
 
 # Takes in a dataframe
 # Returns a processed dataframe
@@ -158,7 +167,9 @@ def processData(df):
 
     # Application mobile number is 8 digits
     # Add new field is_valid_mobile_no based on mobile_no
-    # logger.info("Add is_valid_mobile_no field")
+    logger.info("Add is_valid_mobile_no field")
+    df['is_valid_mobile_no'] = df['mobile_no'].apply( lambda x: is_valid_mobile_no(x) )
+
 
     # Add field is_successful to categorize application as successful or unsuccessful     
     # logger.info("Add is_successful field")
