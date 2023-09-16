@@ -116,6 +116,16 @@ def is_valid_email(email):
         logger.debug("[{}] is invalid email".format(email))
         return False
 
+# Takes in name string 
+# Returns a boolean which is true if the applicant's name is not empty
+def has_no_name(name): 
+    if name == None:
+        logger.debug("Applicant has no name: [{}]".format(name)) 
+        return True
+    else: 
+        logger.debug("Applicant has name: [{}]".format(name)) 
+        return False
+
 
 # Takes in a dataframe
 # Returns a processed dataframe
@@ -143,7 +153,8 @@ def processData(df):
 
     # Remove any rows which do not have a name field (treat this as unsuccessful applications)
     # Add new field has_no_name based on name
-    # logger.info("Add has_no_name field")
+    logger.info("Add has_no_name field")
+    df['has_no_name'] = df['name'].apply( lambda x: has_no_name(x) )
 
     # Application mobile number is 8 digits
     # Add new field is_valid_mobile_no based on mobile_no
