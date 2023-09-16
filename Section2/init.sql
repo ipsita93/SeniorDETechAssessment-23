@@ -1,3 +1,8 @@
+-- Drop tables that exists
+DROP TABLE IF EXISTS tbl_Members CASCADE;
+DROP TABLE IF EXISTS tbl_Items CASCADE;
+DROP TABLE IF EXISTS tbl_Transactions CASCADE;
+
 -- Create the Members table
 CREATE TABLE tbl_Members (
     # auto-increment PK field
