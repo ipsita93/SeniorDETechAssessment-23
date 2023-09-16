@@ -18,8 +18,6 @@ logger = logging.getLogger(__name__)
 # Takes in a dataframe
 # Returns a clean dataframe
 def cleanData(df): 
-    logger.info("Cleaning data...")
-
     # Strip spaces in values of every field
     logger.info("Strip spaces in all fields")
     for column in df:
@@ -137,8 +135,7 @@ def is_valid_mobile_no(mobile_no):
 # Takes in a dataframe
 # Returns a processed dataframe
 def processData(df): 
-    logger.info("Processing data...")
-    print(df)
+    # print(df)
 
     # Split name into first_name and last_name
     logger.info("Split name")
@@ -170,7 +167,7 @@ def processData(df):
 
     # Add field is_successful to categorize application as successful or unsuccessful
     logger.info("Check is successful applicant and add is_successful field")
-    df['is_valid_applicant'] = df.apply( 
+    df['is_successful_applicant'] = df.apply( 
         lambda row: row['is_valid_mobile_no'] and row['above_18'] 
         and row['is_valid_email'] and row['has_no_name'] != True, axis=1 )
 
@@ -178,10 +175,27 @@ def processData(df):
     # Add new field membership_id based on last_name, date_of_birth_YYYYMMDD
     logger.info("Add membership_id field")
     df['membership_id'] = df.apply( 
-        lambda row: row['last_name'] + '_' + utility.calculate_hash(row['date_of_birth_YYYYMMDD'])[0:5] if row['is_valid_applicant'] == True else None, axis=1 )
+        lambda row: row['last_name'] + '_' + 
+        utility.calculate_hash(row['date_of_birth_YYYYMMDD'])[0:5] 
+        if row['is_successful_applicant'] == True else None, axis=1 )
     
-    print(df)
+    # print(df)
+    return df
+
+# Takes in dataframe
+# Returns one dataframe of successful applicants and the other of unsuccessful applicants
+def splitDatabyApplicationSuccess(df): 
+    df_successful = df[df['is_successful_applicant'] == True]
+    # Select subset of columns for successful applications
+    df_successful = df_successful[['first_name', 'last_name', 'email', 'date_of_birth_YYYYMMDD', 'mobile_no', 'above_18', 'membership_id']]
     
+    df_unsuccessful = df[df['is_successful_applicant'] == False]
+    # Select original and new columns for unsuccessful applications
+    df_unsuccessful = df_unsuccessful[['name', 'email', 'date_of_birth', 'mobile_no', 'first_name', 'last_name', 'date_of_birth_YYYYMMDD', 'above_18']]
+    
+    return df_successful, df_unsuccessful
+
+
 # Takes in input CSV filename
 # Returns processed dataframes for successful and unsuccessful applications
 def processCSV(filename): 
@@ -190,9 +204,19 @@ def processCSV(filename):
         df = pd.read_csv(input_path)
 
         # Data cleaning
+        logger.info("Cleaning data...")
         df = cleanData(df)
+
         # Data processing 
+        logger.info("Processing data...")
         df = processData(df)
+
+        logger.info("Split data into successful and unsuccessful applications")
+        df_successful, df_unsuccessful = splitDatabyApplicationSuccess(df)
+
+        logger.info("Done processing CSV: {}".format(filename))
+
+    
 
 # Takes in input directory of all CSV paths and output directory for success and failure
 # Returns consolidated and processed dataframes for successful and unsuccessful applications
