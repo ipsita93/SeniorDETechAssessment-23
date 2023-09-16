@@ -94,12 +94,28 @@ def is_above_18(date_of_birth):
     date_of_birth = pydt.strptime(date_of_birth, '%Y%m%d')
     time_difference = current_date - date_of_birth
     age = round(time_difference.days/365)
-    logger.info("Age of applicant is: {}".format(age))
 
     if age > 18: 
+        logger.debug("Applicant is above 18 and age is [{}]".format(age))   
         return True
     else: 
+        logger.debug("Applicant is below 18 and age is [{}]".format(age))   
         return False
+
+# Takes in email string 
+# Returns a boolean which is true if the applicant email ends with @emailprovider.com or @emailprovider.net
+def is_valid_email(email): 
+    # Regex to check valid email suffix according to requirement
+    regex = "((?!-)[A-Za-z0-9-]" + "{1,63}(?<!-)\\.)" + "+(?:com|net)$"
+    match = re.search(regex, email)
+
+    if match != None: 
+        logger.debug("[{}] is valid email".format(email))
+        return True
+    else: 
+        logger.debug("[{}] is invalid email".format(email))
+        return False
+
 
 # Takes in a dataframe
 # Returns a processed dataframe
@@ -116,17 +132,30 @@ def processData(df):
     logger.info("Format birthday")
     df['date_of_birth_YYYYMMDD'] = df['date_of_birth'].apply( lambda x: format_birthday(x) )
     
-    # Create a new field named above_18 based on the applicant's birthday
+    # Add new field above_18 based on the applicant's birthday
     logger.info("Add above_18 field")
     df['above_18'] = df['date_of_birth_YYYYMMDD'].apply( lambda x: is_above_18(x) )
 
-    # Add field to categorize application as successful or unsuccessful 
-    # Application mobile number is 8 digits
-    # Applicant is over 18 years old as of 1 Jan 2022
     # Applicant has a valid email (email ends with @emailprovider.com or @emailprovider.net)
-    # Remove any rows which do not have a name field (treat this as unsuccessful applications)
-    # Membership IDs for successful applications should be the user's last name, followed by a SHA256 hash of the applicant's birthday, truncated to first 5 digits of hash (i.e <last_name>_<hash(YYYYMMDD)>)
+    # Add new field is_valid_email based on email
+    logger.info("Add is_valid_email field")
+    df['is_valid_email'] = df['email'].apply( lambda x: is_valid_email(x) )
 
+    # Remove any rows which do not have a name field (treat this as unsuccessful applications)
+    # Add new field has_no_name based on name
+    # logger.info("Add has_no_name field")
+
+    # Application mobile number is 8 digits
+    # Add new field is_valid_mobile_no based on mobile_no
+    # logger.info("Add is_valid_mobile_no field")
+
+    # Add field is_successful to categorize application as successful or unsuccessful     
+    # logger.info("Add is_successful field")
+
+
+    # Membership IDs for successful applications should be the user's last name, followed by a SHA256 hash of the applicant's birthday, truncated to first 5 digits of hash (i.e <last_name>_<hash(YYYYMMDD)>)
+    # Add new field membership_id based on last_name, date_of_birth_YYYYMMDD
+    
     print(df)
     
 # Takes in input CSV filename
