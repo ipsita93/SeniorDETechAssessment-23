@@ -210,22 +210,50 @@ def processCSV(filename):
         # Data processing 
         logger.info("Processing data...")
         df = processData(df)
-
         logger.info("Split data into successful and unsuccessful applications")
         df_successful, df_unsuccessful = splitDatabyApplicationSuccess(df)
 
-        logger.info("Done processing CSV: {}".format(filename))
+        return df_successful, df_unsuccessful
 
-    
 
 # Takes in input directory of all CSV paths and output directory for success and failure
 # Returns consolidated and processed dataframes for successful and unsuccessful applications
 # Writes successful and unsuccessful applications in output directory 
 def main (input_dir, success_dir, failure_dir):
+    # Store successful and unsuccessful application records for each dataset processed
+    df_arr_successful = []
+    df_arr_unsuccessful = []
+    execution_date_hour = pydt.now().strftime("%Y%m%d_%H")
+
     # Process each CSV file in the input directory
     for filename in os.listdir(input_dir): 
         logger.info("Processing CSV: {}".format(filename))
-        processCSV(filename)
+        df_successful, df_unsuccessful = processCSV(filename)
+        
+        
+        # Add processed data into a separate array
+        df_arr_successful.append(df_successful)
+        df_arr_unsuccessful.append(df_unsuccessful)    
+
+    logger.info("Done processing CSVs: {}".format(filename))
+
+    # Merge dataframes
+    df_merged_successful = pd.concat(df_arr_successful)
+    df_merged_unsuccessful = pd.concat(df_arr_unsuccessful)
+
+    # Create output directories if they don't exist
+    os.makedirs(success_dir, exist_ok=True)
+    os.makedirs(failure_dir, exist_ok=True)
+        
+    # Write CSV outputs
+    print(execution_date_hour)
+    successful_output_path = success_dir + "/applications_{}.csv".format(execution_date_hour)
+    unsuccessful_output_path = failure_dir + "/applications_{}.csv".format(execution_date_hour)
+    
+    logger.info("Writing output CSVs to paths: [{}] and [{}]".format(successful_output_path, unsuccessful_output_path))
+    # Save data to output directories
+    df_successful.to_csv(successful_output_path, index=False)
+    df_unsuccessful.to_csv(unsuccessful_output_path, index=False)
 
 if __name__ == "__main__":  # Input and output directories
     input_dir = "input"
@@ -233,8 +261,4 @@ if __name__ == "__main__":  # Input and output directories
     success_dir = os.path.join(output_dir, "applications_successful")
     failure_dir = os.path.join(output_dir, "applications_unsuccessful")
     
-    # Create output directories if they don't exist
-    os.makedirs(success_dir, exist_ok=True)
-    os.makedirs(failure_dir, exist_ok=True)
-
     main(input_dir, success_dir, failure_dir)
