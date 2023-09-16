@@ -171,11 +171,14 @@ def processData(df):
     # Add field is_successful to categorize application as successful or unsuccessful
     logger.info("Check is successful applicant and add is_successful field")
     df['is_valid_applicant'] = df.apply( 
-        lambda row: row['is_valid_mobile_no'] and row['above_18'] and row['is_valid_email'] and row['has_no_name'] != True
-        , axis=1 )
+        lambda row: row['is_valid_mobile_no'] and row['above_18'] 
+        and row['is_valid_email'] and row['has_no_name'] != True, axis=1 )
 
     # Membership IDs for successful applications should be the user's last name, followed by a SHA256 hash of the applicant's birthday, truncated to first 5 digits of hash (i.e <last_name>_<hash(YYYYMMDD)>)
     # Add new field membership_id based on last_name, date_of_birth_YYYYMMDD
+    logger.info("Add membership_id field")
+    df['membership_id'] = df.apply( 
+        lambda row: row['last_name'] + '_' + utility.calculate_hash(row['date_of_birth_YYYYMMDD'])[0:5] if row['is_valid_applicant'] == True else None, axis=1 )
     
     print(df)
     

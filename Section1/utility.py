@@ -3,6 +3,7 @@
 import datetime
 from datetime import datetime as pydt
 import re
+import hashlib
 
 def convert_to_datetime (str):
     if not str:
@@ -53,4 +54,5 @@ def convert_to_datetime (str):
         
     return d
 
-
+def calculate_hash (str):
+    return hashlib.sha256(str.encode('utf-8')).hexdigest()
