@@ -34,19 +34,19 @@ def convert_to_datetime (str):
 
     d = None
     try:
-        print ("Trying to convert", str, "from yyyymmdd...")
+        # print ("Trying to convert", str, "from yyyymmdd...")
         d = pydt.strptime(str, '%Y%m%d')
     except ValueError:
         try:
-            print ("Trying to convert", str, "from yyyyddmm...")
+            # print ("Trying to convert", str, "from yyyyddmm...")
             d = pydt.strptime(str, '%Y%m%d')
         except ValueError:
             try:
-                print ("Trying to convert", str, "from ddmmyyyy...")
+                # print ("Trying to convert", str, "from ddmmyyyy...")
                 d = pydt.strptime(str, '%d%m%Y')
             except ValueError:
                 try:
-                    print ("Trying to convert", str, "from mmddyyyy...")
+                    # print ("Trying to convert", str, "from mmddyyyy...")
                     d = pydt.strptime(str, '%m%d%Y')
                 except ValueError:
                     print ("WARNING: Cannot convert", str, "to datetime.")

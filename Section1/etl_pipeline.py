@@ -12,7 +12,7 @@ import utility
 import numpy as np
 
 # Create a custom logger
-logging.basicConfig(level = logging.DEBUG) # Change logging level to DEBUG, WARNING or INFO
+logging.basicConfig(level = logging.INFO) # Change logging level to DEBUG, WARNING or INFO
 logger = logging.getLogger(__name__)
 
 # Takes in a dataframe
@@ -38,7 +38,7 @@ def has_non_alpha_in_first_part(name):
     matches = re.findall("[^A-Za-z ]",first_part)
     res = len(matches) > 0
     if res:
-        logger.warning("[{}] has non alphabet chars in first part [{}] of name: {}".format(name, first_part, matches))
+        logger.debug("[{}] has non alphabet chars in first part [{}] of name: {}".format(name, first_part, matches))
     return res
 
 # Split name with prefix
@@ -75,15 +75,13 @@ def split_name(name):
 # Takes in date_of_birth string
 # Returns the birthday in YYYYMMDD format 
 def format_birthday(date_of_birth): 
-    print(date_of_birth)
-
     # Convert dob to numpy datetime64 data type
-    logger.info("Convert dob to numpy datetime64 data type")
+    logger.debug("Convert dob to numpy datetime64 data type")
     dob_converted = utility.convert_to_datetime(date_of_birth)
-
+    
     # Convert datetime64 data type to string in YYYYMMDD format
-    logger.info("Convert dob to YYYYMMDD")
     dob_converted = dob_converted.strftime('%Y%m%d')
+    logger.debug("Convert dob to YYYYMMDD: {}".format(dob_converted))
 
     return dob_converted
 
@@ -152,28 +150,29 @@ def processData(df):
     df['date_of_birth_YYYYMMDD'] = df['date_of_birth'].apply( lambda x: format_birthday(x) )
     
     # Add new field above_18 based on the applicant's birthday
-    logger.info("Add above_18 field")
+    logger.info("Check if age is above 18 and add above_18 field")
     df['above_18'] = df['date_of_birth_YYYYMMDD'].apply( lambda x: is_above_18(x) )
 
     # Applicant has a valid email (email ends with @emailprovider.com or @emailprovider.net)
     # Add new field is_valid_email based on email
-    logger.info("Add is_valid_email field")
+    logger.info("Check if email is valid and add is_valid_email field")
     df['is_valid_email'] = df['email'].apply( lambda x: is_valid_email(x) )
 
     # Remove any rows which do not have a name field (treat this as unsuccessful applications)
     # Add new field has_no_name based on name
-    logger.info("Add has_no_name field")
+    logger.info("Check if row has no name field and add has_no_name field")
     df['has_no_name'] = df['name'].apply( lambda x: has_no_name(x) )
 
     # Application mobile number is 8 digits
     # Add new field is_valid_mobile_no based on mobile_no
-    logger.info("Add is_valid_mobile_no field")
+    logger.info("Check if mobile no is valid and add is_valid_mobile_no field")
     df['is_valid_mobile_no'] = df['mobile_no'].apply( lambda x: is_valid_mobile_no(x) )
 
-
-    # Add field is_successful to categorize application as successful or unsuccessful     
-    # logger.info("Add is_successful field")
-
+    # Add field is_successful to categorize application as successful or unsuccessful
+    logger.info("Check is successful applicant and add is_successful field")
+    df['is_valid_applicant'] = df.apply( 
+        lambda row: row['is_valid_mobile_no'] and row['above_18'] and row['is_valid_email'] and row['has_no_name'] != True
+        , axis=1 )
 
     # Membership IDs for successful applications should be the user's last name, followed by a SHA256 hash of the applicant's birthday, truncated to first 5 digits of hash (i.e <last_name>_<hash(YYYYMMDD)>)
     # Add new field membership_id based on last_name, date_of_birth_YYYYMMDD
