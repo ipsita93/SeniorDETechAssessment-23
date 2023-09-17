@@ -6,8 +6,8 @@ services:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=Qwerty123!
             - POSTGRES_DB=ecommerce
-        ports: 
-            - 5430:5430
+        ports:
+            - 5431:5431
         logging:
             options:
                 max-size: 10m

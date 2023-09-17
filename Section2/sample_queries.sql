@@ -16,14 +16,14 @@ LIMIT 10;
 
 -- Which are the top 3 items that are frequently brought by members
 SELECT
-    i.item_name,
-    COUNT(t.item_id) AS purchase_count
+    i.item_id,
+    COUNT(t.quantity) AS purchase_count
 FROM
     tbl_Items i
 JOIN
     tbl_Transactions t ON i.item_id = t.item_id
 GROUP BY
-    i.item_name
+    i.item_id
 ORDER BY
     purchase_count DESC
 LIMIT 3;
