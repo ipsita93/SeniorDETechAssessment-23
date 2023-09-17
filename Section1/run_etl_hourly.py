@@ -40,7 +40,7 @@ def execute_etl_task (ti):
 with DAG(
     "ipsita_hourly_script_run"
     , default_args=default_args
-    , schedule_interval='05 * * * *'
+    , schedule_interval='*/15 * * * *'
     , catchup=False
     , tags=['ipsita']
 ) as dag:
