@@ -24,7 +24,7 @@ archive_dir = AIRFLOW_HOME + '/dags/etl_scripts/archive/'
 default_args = {
     'owner': 'admin',
     'depends_on_past': False,
-    'start_date': datetime(2023, 5, 20, tzinfo=sg_tz),
+    'start_date': datetime(2023, 11, 17, tzinfo=sg_tz),
     'email': ['ipsitamohapatra93@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -34,7 +34,7 @@ default_args = {
 
 def execute_etl_task (ti):
     input_csvs = ti.xcom_pull(task_ids=['check_input_csvs'])[0].split(' ')
-    etl_script.main( input_csvs, successful_output_dir, unsuccessful_output_dir )
+    etl_pipeline.main( input_csvs, successful_output_dir, unsuccessful_output_dir )
 
 
 with DAG(
