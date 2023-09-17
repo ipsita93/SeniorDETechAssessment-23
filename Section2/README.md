@@ -1,4 +1,4 @@
-# Section 1: Data Pipelines
+# Section 2: Databases
 
 ## Build the Docker image
 docker build -t ecommerce-postgres .
