@@ -32,7 +32,7 @@ Requests that are not cached are passed to the API Gateway, and the entire reque
 - Least Privilege
 
 ## Architecture Diagram  - Detailed Explanation 
-*See design2_architecture_diagram.draw.io or design2_architecture_diagram.png* 
+*Refer to design2_architecture_diagram.draw.io or design2_architecture_diagram.png* 
 
 #### 1a. Confluent Cloud (Engineering Team Managed Kafka Stream): 
 - A separate web application hosting a Kafka stream for uploading images to the cloud.
