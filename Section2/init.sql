@@ -14,7 +14,7 @@ CREATE TABLE tbl_Members (
     above_18 BOOLEAN NOT NULL
 );
 
--- Create an index on the membership_id column
+-- Create an index on the membership_id column in Members table 
 CREATE INDEX idx_membership_id ON tbl_Members (membership_id);
 
 -- Create the Items table
@@ -26,8 +26,8 @@ CREATE TABLE tbl_Items (
     weight_kg DECIMAL(5, 2) NOT NULL
 );
 
--- Create indexes on the Items table on item_name column
-CREATE INDEX idx_item_name ON tbl_Items (item_name);
+-- Create indexes on the item_id column in Items table
+CREATE INDEX idx_item_id ON tbl_Items (item_id);
 
 -- Create the Transactions table
 CREATE TABLE tbl_Transactions (

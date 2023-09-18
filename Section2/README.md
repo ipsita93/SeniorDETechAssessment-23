@@ -86,6 +86,16 @@ The database schema will include the following entities:
 - Total Items Weight (in kg)
 - Transaction Date (with default as current timestamp)
 
+### Indexes
+
+Given the sample analytical SQL queries (below), we can also set up indices to make our SQL queries more efficient. 
+
+***Create an index on the membership_id column in tbl_Memberships table: ***
+`CREATE INDEX idx_membership_id ON tbl_Members (membership_id);`
+
+***Create indexes on item_id column in tbl_Items table: ***
+`CREATE INDEX idx_item_id ON tbl_Items (item_id);`
+
 ## Sample Analytical SQL Queries
 *Refer `sample_queries.sql`*
 
