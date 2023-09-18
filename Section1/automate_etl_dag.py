@@ -1,30 +1,28 @@
 #!/usr/bin/env python3
 
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import pendulum
 import os
 
-# from etl_scripts import etl_script
-
+import etl_pipeline 
 
 sg_tz = pendulum.timezone("Asia/Singapore")
 
-
-os.environ["AIRFLOW_HOME"] = "~/airflow"
-AIRFLOW_HOME = os.environ["AIRFLOW_HOME"]
-input_dir = AIRFLOW_HOME + '/dags/etl_scripts/input/'
+AIRFLOW_HOME = "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/airflow"
+input_dir = AIRFLOW_HOME + '/example_dags/govtech_scripts/input'
 input_file_pattern = 'applications_dataset_*.csv'
-successful_output_dir = AIRFLOW_HOME + '/dags/etl_scripts/applications_successful/'
-unsuccessful_output_dir = AIRFLOW_HOME + '/dags/etl_scripts/applications_unsuccessful/'
-archive_dir = AIRFLOW_HOME + '/dags/etl_scripts/archive/'
+input_file_format = '.csv'
+successful_output_dir = AIRFLOW_HOME + '/example_dags/govtech_scripts/output/applications_successful/'
+unsuccessful_output_dir = AIRFLOW_HOME + '/example_dags/govtech_scripts/output/applications_unsuccessful/'
+archive_dir = AIRFLOW_HOME + '/example_dags/govtech_scripts/archive/'
 
 default_args = {
     'owner': 'admin',
     'depends_on_past': False,
-    'start_date': datetime(2023, 11, 17, tzinfo=sg_tz),
+    'start_date': datetime(2023, 9, 15, tzinfo=sg_tz),
     'email': ['ipsitamohapatra93@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -33,14 +31,15 @@ default_args = {
 }
 
 def execute_etl_task (ti):
+    print("ETL pipeline started...")
     input_csvs = ti.xcom_pull(task_ids=['check_input_csvs'])[0].split(' ')
     etl_pipeline.main( input_csvs, successful_output_dir, unsuccessful_output_dir )
-
+    print("ETL pipeline finished...")
 
 with DAG(
-    "ipsita_hourly_script_run"
+    "ipsita_govtech_etl_run"
     , default_args=default_args
-    , schedule_interval='*/15 * * * *'
+    , schedule='@hourly'
     , catchup=False
     , tags=['ipsita']
 ) as dag:
@@ -48,12 +47,12 @@ with DAG(
     task_check_input = BashOperator(
         task_id="check_input_csvs",
         env={'INPUT_DIR': input_dir},
-        bash_command="ls -l $INPUT_DIR/{input_file_pattern}; find $INPUT_DIR -name '{input_file_pattern}' | xargs".format(input_file_pattern=input_file_pattern),
+        bash_command="ls -l $INPUT_DIR/{input_file_pattern}; find $INPUT_DIR | grep {input_file_format}".format(input_file_pattern=input_file_pattern, input_file_format=input_file_format),
         do_xcom_push=True
     )
 
     task_execute_etl = PythonOperator(
-        task_id='execute_python_etl_code',
+        task_id='execute_python_etl_pipeline',
         python_callable=execute_etl_task,
         op_args=[],
         op_kwargs={}
