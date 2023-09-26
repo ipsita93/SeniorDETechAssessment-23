@@ -20,23 +20,25 @@ The above command has created and started the Postgres container.
 
 `docker ps`
 
-It can be seen that the “PostgresCont” container is executing efficiently.
+It can be seen that the "section2-postgres-1" container is executing efficiently.
 
 ### 3. Interact With Executing Container
 
-`docker exec -it PostgresCont bash`
+`docker exec -it section2-postgres-1 bash`
 
-Subsequently, the “PostgresCont” container has been accessed and now we can run commands in it.
+Subsequently, the "section2-postgres-1" container has been accessed and now we can run commands in it.
 
-### 4. Establish a Connection With a Database
+### 4. Establish a Connection With a the Database called ecommerce 
 
-'psql -h localhost -U postgres'
+'psql -h localhost -U postgres -d ecommerce'
 
 After that, we can execute/run SQL queries and psql commands in the SQL shell.
 
 ### 5. Execute psql Commands
 
-We have efficiently installed PostgreSQL using Docker Compose. Now, we can run our DDL statements to set up the database schema. 
+We have efficiently installed PostgreSQL using Docker Compose. Now, we can run our DDL statements to set up the database schema or show tables command to show existing tables. 
+
+'\dt'
 
 ## Entity-Relationship Diagram (ERD)
 *Refer to `er_diagram.drawio` or `screenshots/er_diagram_drawio.png`*

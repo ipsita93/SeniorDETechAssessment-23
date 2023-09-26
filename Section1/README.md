@@ -39,7 +39,7 @@ To ensure that the pipeline runs hourly, we run the following commands to set up
 
 In terminal, change directory to repository where dags are stored: 
 
-`cd /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/airflow/example_dags`
+`cd /Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/airflow/example_dags`
 
 Write the dag script as well as all other input and output directories and files (such as CSV input files)
 e.g. `vi automate_etl_pipeline.py`
